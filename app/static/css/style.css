@@ -1,0 +1,489 @@
+/* Color Variables */
+:root {
+    --primary-green: #2d6a4f;
+    --secondary-green: #40916c;
+    --light-green: #52b788;
+    --pale-green: #d8f3dc;
+    --accent-blue: #1d7874;
+    --light-blue: #52b788;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --dark-text: #2d3436;
+}
+
+/* Body and General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-gray);
+    color: var(--dark-text);
+}
+
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%) !important;
+    box-shadow: 0 2px 8px rgba(45, 106, 79, 0.15);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: var(--white) !important;
+    letter-spacing: 0.5px;
+}
+
+.plant-icon {
+    margin-right: 8px;
+    font-size: 1.3rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: color 0.3s ease;
+    margin-left: 1.5rem;
+}
+
+.nav-link:hover {
+    color: var(--white) !important;
+}
+
+/* Main Container */
+main {
+    min-height: calc(100vh - 200px);
+    background-color: var(--light-gray);
+}
+
+/* Section Titles */
+h1, h2, h3 {
+    color: var(--primary-green);
+}
+
+.text-green {
+    color: var(--primary-green) !important;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--white);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(45, 106, 79, 0.1) !important;
+}
+
+.card-plant-today {
+    border-left: 4px solid var(--secondary-green);
+}
+
+.card-plant {
+    border-top: 3px solid var(--secondary-green);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Plant Image Placeholder */
+.plant-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, var(--pale-green) 0%, var(--light-green) 100%);
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plant-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--pale-green) 0%, var(--light-green) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--primary-green);
+}
+
+/* Button Styling */
+.btn-success {
+    background-color: var(--secondary-green);
+    border-color: var(--secondary-green);
+    color: var(--white);
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    transform: scale(1.05);
+}
+
+.btn-outline-success {
+    color: var(--secondary-green);
+    border-color: var(--secondary-green);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--secondary-green);
+    border-color: var(--secondary-green);
+    color: var(--white);
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--white);
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: var(--white);
+}
+
+.btn-custom {
+    background: linear-gradient(135deg, var(--secondary-green) 0%, var(--light-green) 100%);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-custom:hover {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+    color: var(--white);
+    transform: scale(1.02);
+}
+
+/* Add Plant Button */
+.add-plant-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 300;
+    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25);
+    background: linear-gradient(135deg, var(--secondary-green) 0%, var(--light-green) 100%);
+    border: none;
+}
+
+.add-plant-btn:hover {
+    box-shadow: 0 6px 16px rgba(45, 106, 79, 0.35);
+    transform: scale(1.1);
+}
+
+/* Form Control Styling */
+.form-control-custom,
+.form-select-custom {
+    border: 2px solid var(--pale-green);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.form-control-custom:focus,
+.form-select-custom:focus {
+    border-color: var(--secondary-green);
+    box-shadow: 0 0 0 0.2rem rgba(45, 106, 79, 0.15);
+    outline: none;
+}
+
+.form-control-custom {
+    height: auto;
+}
+
+.form-label {
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.bg-success {
+    background-color: var(--secondary-green) !important;
+}
+
+.bg-info {
+    background-color: var(--accent-blue) !important;
+}
+
+/* Alerts */
+.alert-custom {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.alert-info {
+    background-color: rgba(29, 120, 116, 0.1);
+    color: var(--accent-blue);
+    border-left: 4px solid var(--accent-blue);
+}
+
+.alert-secondary {
+    background-color: rgba(45, 106, 79, 0.1);
+    color: var(--primary-green);
+    border-left: 4px solid var(--primary-green);
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid #e9ecef;
+    margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-link {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+
+    .add-plant-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Utility Classes */
+.text-dark {
+    color: var(--dark-text) !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%) !important;
+}
+
+/* Card Body Padding */
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Hover Effects */
+.card-plant:hover .card-title {
+    color: var(--secondary-green);
+}
+
+/* Plant Profile Page */
+.plant-profile-image-container {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, var(--pale-green) 0%, var(--light-green) 100%);
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plant-profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.plant-profile-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--pale-green) 0%, var(--light-green) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--primary-green);
+}
+
+.placeholder-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-green);
+}
+
+.detail-box {
+    padding: 1rem;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    border-left: 3px solid var(--secondary-green);
+    transition: all 0.3s ease;
+}
+
+.detail-box:hover {
+    background-color: var(--pale-green);
+    border-left-color: var(--primary-green);
+}
+
+.btn-custom-outline {
+    border-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom-outline:hover {
+    transform: translateY(-2px);
+}
+
+/* User Profile Page */
+.avatar-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--secondary-green);
+    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-section {
+    background-color: var(--light-gray);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid var(--secondary-green);
+}
+
+.user-info-section {
+    padding-left: 1.5rem;
+}
+
+/* Photo Upload Styling */
+.photo-upload-area {
+    position: relative;
+    width: 100%;
+}
+
+.photo-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 2rem;
+    border: 2px dashed var(--secondary-green);
+    border-radius: 8px;
+    background-color: rgba(82, 183, 136, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.photo-upload-label:hover {
+    background-color: rgba(82, 183, 136, 0.1);
+    border-color: var(--primary-green);
+}
+
+.photo-upload-content {
+    text-align: center;
+    color: var(--primary-green);
+}
+
+.upload-icon {
+    width: 3rem;
+    height: 3rem;
+    color: var(--secondary-green);
+    margin-bottom: 1rem;
+    stroke-width: 1.5;
+}
+
+.photo-upload-label p {
+    margin-bottom: 0.25rem;
+    color: var(--dark-text);
+}
+
+.photo-preview {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+}
+
+.photo-preview img {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 10px;
+    background-color: var(--white);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--secondary-green) 0%, var(--light-green) 100%);
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-body {
+    background-color: var(--white);
+}
+
+.modal-footer {
+    background-color: var(--light-gray);
+    border-radius: 0 0 10px 10px;
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-green);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-green);
+}

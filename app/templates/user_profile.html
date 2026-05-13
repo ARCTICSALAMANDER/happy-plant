@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - Happy Plant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Back Button -->
+        <div class="col-12 mb-4">
+            <a href="/" class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <h1 class="text-green fw-bold mb-5 text-center">My Profile</h1>
+
+                    <!-- Avatar and User Info -->
+                    <div class="profile-section mb-4">
+                        <div class="row align-items-center">
+                            <!-- Avatar -->
+                            <div class="col-auto text-center">
+                                <div class="avatar-container mb-3">
+                                    <img src="/static/images/icons/avatar.svg" alt="User Avatar" class="avatar-image">
+                                </div>
+                            </div>
+
+                            <!-- User Info -->
+                            <div class="col flex-grow-1">
+                                <div class="user-info-section">
+                                    <!-- Username -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold text-green">Username</label>
+                                        <input type="text" class="form-control form-control-custom" 
+                                               value="{{ user.username }}" disabled>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold text-green">Password</label>
+                                        <input type="password" class="form-control form-control-custom" 
+                                               value="••••••••" disabled>
+                                    </div>
+
+                                    <!-- Change Credentials Button -->
+                                    <button class="btn btn-success btn-sm w-100 btn-custom mb-3" data-bs-toggle="modal" data-bs-target="#changeCredentialsModal">
+                                        Change Username & Password
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Email Section -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-green">Email</label>
+                        <input type="email" class="form-control form-control-custom" 
+                               value="{{ user.email }}" disabled>
+                    </div>
+
+                    <!-- Member Since -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-green">Member Since</label>
+                        <input type="text" class="form-control form-control-custom" 
+                               value="{{ user.created_at }}" disabled>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Sign Out Button -->
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-danger btn-lg btn-custom">
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Credentials Modal -->
+<div class="modal fade" id="changeCredentialsModal" tabindex="-1" aria-labelledby="changeCredentialsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-gradient border-0">
+                <h5 class="modal-title fw-bold text-white" id="changeCredentialsLabel">Change Username & Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/profile/change-credentials" method="POST">
+                <div class="modal-body p-4">
+                    <!-- Current Password -->
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label fw-bold text-green">Current Password</label>
+                        <input type="password" class="form-control form-control-custom" id="currentPassword" 
+                               name="current_password" required>
+                    </div>
+
+                    <!-- New Username -->
+                    <div class="mb-3">
+                        <label for="newUsername" class="form-label fw-bold text-green">New Username (optional)</label>
+                        <input type="text" class="form-control form-control-custom" id="newUsername" 
+                               name="new_username" placeholder="Leave blank to keep current">
+                    </div>
+
+                    <!-- New Password -->
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label fw-bold text-green">New Password (optional)</label>
+                        <input type="password" class="form-control form-control-custom" id="newPassword" 
+                               name="new_password" placeholder="Leave blank to keep current">
+                    </div>
+
+                    <!-- Confirm New Password -->
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label fw-bold text-green">Confirm New Password</label>
+                        <input type="password" class="form-control form-control-custom" id="confirmPassword" 
+                               name="confirm_password" placeholder="Confirm your new password">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success btn-custom">Update Credentials</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

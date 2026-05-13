@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ plant.name }} - Happy Plant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Back Button -->
+        <div class="col-12 mb-4">
+            <a href="/" class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Plant Details Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <!-- Plant Image -->
+                <div class="plant-profile-image-container">
+                    {% if plant.photo_url %}
+                        <img src="{{ plant.photo_url }}" alt="{{ plant.name }}" class="plant-profile-image">
+                    {% else %}
+                        <div class="plant-profile-placeholder">
+                            <span class="placeholder-text">No Photo</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Plant Name and Species -->
+                    <div class="mb-4">
+                        <h1 class="text-green fw-bold mb-1">{{ plant.name }}</h1>
+                        <h4 class="text-muted fw-normal">{{ plant.species }}</h4>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5 class="text-green fw-bold mb-3">Description</h5>
+                        <p class="lead text-dark">
+                            {{ plant.description or 'No description available.' }}
+                        </p>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Plant Details Grid -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Location</h6>
+                                <p class="text-dark">{{ plant.location or 'Not specified' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Soil Type</h6>
+                                <p class="text-dark">{{ plant.soil_type or 'Not specified' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Sunlight Requirement</h6>
+                                <p class="text-dark">{{ plant.sunlight_requirement or 'Not specified' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Watering Frequency</h6>
+                                <p class="text-dark">{{ plant.watering_frequency }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Watering Time</h6>
+                                <p class="text-dark">{{ plant.watering_time }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-box">
+                                <h6 class="text-green fw-bold mb-2">Water Amount</h6>
+                                <p class="text-dark">{{ plant.watering_amount }} ml</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 justify-content-between flex-wrap">
+                        <a href="/" class="btn btn-outline-secondary btn-custom-outline">
+                            Back to Dashboard
+                        </a>
+                        <a href="/profile" class="btn btn-outline-primary btn-custom-outline">
+                            Go to Profile
+                        </a>
+                        <button class="btn btn-outline-danger btn-custom-outline">
+                            Delete Plant
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
