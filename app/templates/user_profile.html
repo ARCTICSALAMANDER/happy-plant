@@ -20,6 +20,12 @@
                 <div class="card-body p-5">
                     <h1 class="text-green fw-bold mb-5 text-center">My Profile</h1>
 
+                    {% if error %}
+                        <div class="alert alert-danger alert-custom mb-4" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
                     <!-- Avatar and User Info -->
                     <div class="profile-section mb-4">
                         <div class="row align-items-center">
@@ -58,27 +64,11 @@
 
                     <hr class="my-4">
 
-                    <!-- Email Section -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-green">Email</label>
-                        <input type="email" class="form-control form-control-custom" 
-                               value="{{ user.email }}" disabled>
-                    </div>
-
-                    <!-- Member Since -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-green">Member Since</label>
-                        <input type="text" class="form-control form-control-custom" 
-                               value="{{ user.created_at }}" disabled>
-                    </div>
-
-                    <hr class="my-4">
-
                     <!-- Sign Out Button -->
                     <div class="d-grid gap-2">
-                        <button class="btn btn-danger btn-lg btn-custom">
+                        <a href="/logout" class="btn btn-danger btn-lg btn-custom">
                             Sign Out
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

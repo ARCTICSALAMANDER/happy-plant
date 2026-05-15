@@ -27,7 +27,7 @@ def get_session() -> Session:
 
 
 @contextmanager
-def get_session_context(): # испольовать везде, где нужно работать с базой данных, чтобы не забывать закрывать сессию и обрабатывать исключения
+def get_sess_advanced(): # испольовать везде, где нужно работать с базой данных, чтобы не забывать закрывать сессию и обрабатывать исключения
     db = sess_local()
     try:
         yield db
@@ -37,12 +37,3 @@ def get_session_context(): # испольовать везде, где нужн�
         raise
     finally:
         db.close()
-
-
-# # Dependency for FastAPI, у меня фласк поэтому не нужно
-# def get_db():
-#     db = sess_local()
-#     try:
-#         yield db
-#     finally:
-#         db.close()

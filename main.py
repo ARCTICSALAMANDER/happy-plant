@@ -1,125 +1,252 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime, timedelta
+from functools import wraps
+import os
+from werkzeug.utils import secure_filename
+from app.database import get_session, init_db
+from app.crud import (
+    create_user, verify_password, get_user_by_username, get_user_by_id,
+    create_plant, get_user_plants, get_plant_by_id, delete_plant,
+    update_user_password, update_user_username
+)
+from app.models import FrequencyEnum
 
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
-app.config['SECRET_KEY'] = 'your-secret-key-change-this'
+app.config['SECRET_KEY'] = 'your-secret-key-change-this-in-production'
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 мб максимально
+UPLOAD_FOLDER = os.path.join('app', 'static', 'uploads', 'plants')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-mock_plants = [
-    {
-        'id': 1,
-        'name': 'Monstera Deliciosa',
-        'species': 'Monstera Deliciosa',
-        'location': 'Living Room',
-        'watering_frequency': 'Weekly',
-        'watering_time': '09:00',
-        'watering_amount': 500,
-        'photo_url': '',
-        'description': 'A beautiful climbing plant with large leaves. It features distinctive perforated leaves that develop as the plant matures. Monstera is a popular choice for indoor spaces due to its low maintenance requirements and stunning appearance.',
-        'soil_type': 'Potting Mix',
-        'sunlight_requirement': 'Partial Sun'
-    },
-    {
-        'id': 2,
-        'name': 'Snake Plant',
-        'species': 'Sansevieria trifasciata',
-        'location': 'Bedroom',
-        'watering_frequency': 'Every 2 weeks',
-        'watering_time': '10:00',
-        'watering_amount': 250,
-        'photo_url': '',
-        'description': 'A low maintenance succulent with striking vertical leaves. The Snake Plant is extremely hardy and can tolerate a wide range of light conditions. It is also known for its air-purifying properties.',
-        'soil_type': 'Succulent Mix',
-        'sunlight_requirement': 'Partial Shade'
-    },
-    {
-        'id': 3,
-        'name': 'Pothos',
-        'species': 'Epipremnum aureum',
-        'location': 'Kitchen',
-        'watering_frequency': 'Weekly',
-        'watering_time': '08:00',
-        'watering_amount': 300,
-        'photo_url': '',
-        'description': 'A trailing plant that is easy to care for and highly adaptable. Pothos grows quickly and can be trained to climb or cascade. It features heart-shaped leaves and is perfect for hanging baskets or shelves.',
-        'soil_type': 'Potting Mix',
-        'sunlight_requirement': 'Partial Shade'
-    },
-]
+def allowed_file(filename):
+    """Check if file extension is allowed."""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-mock_user = {
-    'id': 1,
-    'username': 'plantlover',
-    'email': 'plantlover@example.com',
-    'created_at': 'January 15, 2025',
-}
 
-mock_today_watering = [
-    {
-        'id': 1,
-        'name': 'Monstera Deliciosa',
-        'species': 'Monstera Deliciosa',
-        'watering_count': 1,
-        'next_watering_time': '09:00 AM',
-        'watering_amount': 500
-    },
-    {
-        'id': 3,
-        'name': 'Pothos',
-        'species': 'Epipremnum aureum',
-        'watering_count': 1,
-        'next_watering_time': '10:00 AM',
-        'watering_amount': 300
-    },
-]
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('auth'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/auth', methods=['GET'])
+def auth():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    return render_template('auth.html')
+
+
+@app.route('/auth/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    
+    if not username or not password:
+        return render_template('auth.html', error='Username and password are required'), 400
+    
+    db = get_session()
+    try:
+        user = verify_password(db, username, password)
+        if user:
+            session['user_id'] = user.id
+            session['username'] = user.username
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('auth.html', error='Invalid username or password'), 401
+    finally:
+        db.close()
+
+
+@app.route('/auth/signup', methods=['POST'])
+def signup():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+    
+    if not all([username, password, confirm_password]):
+        return render_template('auth.html', error='All fields are required'), 400
+    
+    if len(username) < 3 or len(username) > 50:
+        return render_template('auth.html', error='Username must be 3-50 characters'), 400
+    
+    if len(password) < 6:
+        return render_template('auth.html', error='Password must be at least 6 characters'), 400
+    
+    if password != confirm_password:
+        return render_template('auth.html', error='Passwords do not match'), 400
+    
+    db = get_session()
+    try:
+        user = create_user(db, username, password)
+        if user:
+            session['user_id'] = user.id
+            session['username'] = user.username
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('auth.html', error='Username already exists'), 400
+    finally:
+        db.close()
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth'))
 
 
 @app.route('/')
+@login_required
 def dashboard():
-    today = datetime.now().strftime('%A, %B %d, %Y')
-    return render_template(
-        'dashboard.html',
-        today_date=today,
-        plants_to_water=mock_today_watering,
-        all_plants=mock_plants
-    )
+    db = get_session()
+    try:
+        user_id = session.get('user_id')
+        plants = get_user_plants(db, user_id)
+        
+        today = datetime.now().strftime('%A, %B %d, %Y')
+        return render_template(
+            'dashboard.html',
+            today_date=today,
+            plants_to_water=[],  # Placeholder - would be calculated from watering schedules
+            all_plants=plants,
+            username=session.get('username')
+        )
+    finally:
+        db.close()
 
 
 @app.route('/add-plant', methods=['GET', 'POST'])
+@login_required
 def add_plant():
     if request.method == 'POST':
-        # Process form data here
-        # For now, just redirect to dashboard
-        return redirect(url_for('dashboard'))
+        db = get_session()
+        try:
+            user_id = session.get('user_id')
+            plant_name = request.form.get('name')
+            watering_frequency = request.form.get('frequency', 'weekly')
+            watering_time = request.form.get('watering_time', '09:00')
+            watering_amount = float(request.form.get('amount_ml', 500))
+            
+            # Handle photo upload
+            photo_url = None
+            if 'photo' in request.files:
+                file = request.files['photo']
+                if file and file.filename and allowed_file(file.filename):
+                    filename = secure_filename(f"{user_id}_{datetime.now().timestamp()}_{file.filename}")
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    photo_url = f"/static/uploads/plants/{filename}"
+            
+            plant = create_plant(
+                db,
+                user_id=user_id,
+                name=plant_name,
+                photo_url=photo_url,
+                watering_frequency=watering_frequency,
+                watering_time=watering_time,
+                watering_amount=watering_amount
+            )
+            
+            if plant:
+                return redirect(url_for('dashboard'))
+            else:
+                return render_template('add_plant.html', error='Failed to create plant'), 400
+        except Exception as e:
+            print(f"Error creating plant: {e}")
+            return render_template('add_plant.html', error='An error occurred'), 500
+        finally:
+            db.close()
+    
     return render_template('add_plant.html')
 
 
 @app.route('/plant/<int:plant_id>')
+@login_required
 def plant_profile(plant_id):
-    """Plant profile page showing detailed plant information."""
-    # Find the plant by ID
-    plant = next((p for p in mock_plants if p['id'] == plant_id), None)
-    
-    if not plant:
+    db = get_session()
+    try:
+        plant = get_plant_by_id(db, plant_id)
+        
+        if not plant or plant.user_id != session.get('user_id'):
+            return redirect(url_for('dashboard'))
+        
+        return render_template('plant_profile.html', plant=plant)
+    finally:
+        db.close()
+
+
+@app.route('/plant/<int:plant_id>/delete', methods=['POST'])
+@login_required
+def delete_plant_route(plant_id):
+    db = get_session()
+    try:
+        plant = get_plant_by_id(db, plant_id)
+        if not plant or plant.user_id != session.get('user_id'):
+            return redirect(url_for('dashboard'))
+        
+        delete_plant(db, plant_id)
         return redirect(url_for('dashboard'))
-    
-    return render_template('plant_profile.html', plant=plant)
+    finally:
+        db.close()
 
 
 @app.route('/profile')
+@login_required
 def user_profile():
-    """User profile page."""
-    return render_template('user_profile.html', user=mock_user)
+    db = get_session()
+    try:
+        user_id = session.get('user_id')
+        user = get_user_by_id(db, user_id)
+        return render_template('user_profile.html', user=user)
+    finally:
+        db.close()
 
 
 @app.route('/profile/change-credentials', methods=['POST'])
+@login_required
 def change_credentials():
-    """Handle changing username and password."""
-    # Placeholder for credential change logic
-    # In production, this would update the database
-    return redirect(url_for('user_profile'))
+    db = get_session()
+    try:
+        user_id = session.get('user_id')
+        current_password = request.form.get('current_password')
+        new_username = request.form.get('new_username')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        user = get_user_by_id(db, user_id)
+        verified = verify_password(db, user.username, current_password)
+        
+        if not verified:
+            return render_template('user_profile.html', user=user, error='Current password is incorrect'), 401
+        
+        if new_username:
+            if len(new_username) < 3:
+                return render_template('user_profile.html', user=user, error='Username must be at least 3 characters'), 400
+            user = update_user_username(db, user_id, new_username)
+            if not user:
+                return render_template('user_profile.html', user=user, error='Username already exists'), 400
+            session['username'] = new_username
+        
+        # Update password if provided
+        if new_password:
+            if len(new_password) < 6:
+                return render_template('user_profile.html', user=user, error='Password must be at least 6 characters'), 400
+            if new_password != confirm_password:
+                return render_template('user_profile.html', user=user, error='Passwords do not match'), 400
+            update_user_password(db, user_id, new_password)
+        
+        return redirect(url_for('user_profile'))
+    finally:
+        db.close()
 
 
 if __name__ == '__main__':
+    init_db()  # Initialize database on startup
     app.run(debug=True, host='0.0.0.0', port=5000)
