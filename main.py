@@ -9,7 +9,6 @@ from app.crud import (
     create_plant, get_user_plants, get_plant_by_id, delete_plant,
     update_user_password, update_user_username
 )
-# from app.models import FrequencyEnum
 from app.api import PlantApiImpl
 
 
@@ -281,4 +280,4 @@ def change_credentials():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)
