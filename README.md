@@ -41,3 +41,9 @@ Flask, werkzeug
 
 4. API
 Plant.id API
+
+# Запуск
+
+```
+pip install -r requirements.txt
+python main.py
