@@ -1,3 +1,6 @@
+from pickle import NONE
+
+from matplotlib.dates import MONTHLY
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, ForeignKey, Boolean, Enum
 from sqlalchemy.orm import DeclarativeBase, relationship
 import datetime
@@ -37,12 +40,10 @@ class Plant(Base):
 
 
 class FrequencyEnum(str, enum.Enum):
-    DAILY = "daily"
-    EVERY_2_DAYS = "every_2_days"
-    EVERY_3_DAYS = "every_3_days"
-    WEEKLY = "weekly"
-    BIWEEKLY = "biweekly" # раз в 2 недели
-    MONTHLY = "monthly"
+    EVERY_3_DAYS = "every_3_days" # влажная почва
+    WEEKLY = "weekly" # умеренно влажная почва
+    BIWEEKLY = "biweekly" # сухая почва
+    NO_INFO = "no_info" # нет информации
 
 
 class WateringSchedule(Base):

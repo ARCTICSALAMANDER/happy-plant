@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models import User, Plant, WateringLog, WateringSchedule
+from app.models import FrequencyEnum, User, Plant, WateringLog, WateringSchedule
 import bcrypt
 import datetime
 
@@ -30,7 +30,7 @@ def get_user_by_id(session: Session, user_id: int):
     return session.query(User).filter_by(id=user_id).first()
 
 
-def create_plant(session: Session, user_id: int, name: str, species: str, photo_url: str, description: str, watering_frequency: str):
+def create_plant(session: Session, user_id: int, name: str, species: str, photo_url: str, description: str, watering_frequency: FrequencyEnum):
     plant = Plant(user_id=user_id, name=name, species=species, description=description, photo_url=photo_url, created_at=datetime.datetime.now(datetime.timezone.utc))
     session.add(plant)
     session.commit()
@@ -82,3 +82,35 @@ def create_watering_log(session: Session, plant_id: int, watered_at: datetime.da
     session.commit()
 
     return watering_log
+
+
+def get_water_needing_plants(session: Session, user_id: int):
+    plants = get_user_plants(session, user_id)
+    res = []
+
+    for plant in plants:
+        freq_row = session.query(WateringSchedule.frequency).filter_by(plant_id=plant.id).first()
+        if not freq_row:
+            continue
+        
+        freq = freq_row[0]
+
+        waterings = session.query(WateringLog.watered_at).filter_by(plant_id=plant.id).order_by(WateringLog.watered_at.desc()).all()
+        
+        if waterings:
+            last_watering = waterings[0][0]
+
+            if freq == FrequencyEnum.EVERY_3_DAYS:
+                if datetime.datetime.now() - last_watering >= datetime.timedelta(days=3):
+                    res.append(plant)
+            elif freq == FrequencyEnum.WEEKLY:
+                if datetime.datetime.now() - last_watering >= datetime.timedelta(days=7):
+                    res.append(plant)
+            elif freq == FrequencyEnum.BIWEEKLY:
+                if datetime.datetime.now() - last_watering >= datetime.timedelta(days=14):
+                    res.append(plant)
+        else:
+            if freq != FrequencyEnum.NO_INFO:
+                res.append(plant)
+        
+    return res

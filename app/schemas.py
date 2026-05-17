@@ -25,7 +25,7 @@ class PlantCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
-class PlantInfo(BaseModel): # ответ от определителя растений подогнать под этот шаблон
+class PlantInfo(BaseModel):
     name: str
     description: str | None = None
     watering_frequency: FrequencyEnum | None = None

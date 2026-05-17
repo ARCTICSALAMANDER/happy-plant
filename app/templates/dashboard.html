@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="container">
-    <!-- Today's Watering Schedule Section -->
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-dark fw-bold">Today's Watering Schedule</h2>
@@ -24,11 +23,6 @@
                             <p class="card-text text-muted small">
                                 <strong>Species:</strong> {{ plant.species or 'Unknown' }}
                             </p>
-                            <p class="card-text text-muted small">
-                                <strong>Next watering:</strong> {{ plant.next_watering_time }}
-                            </p>
-                            <p class="card-text text-muted small">
-                                <strong>Amount:</strong> {{ plant.watering_amount }} ml
                             </p>
                             <form action="/plant/{{ plant.id }}/mark-watered" method="POST" style="display: inline; width: 100%;">
                                 <button type="submit" class="btn btn-sm btn-outline-success mt-2 w-100">

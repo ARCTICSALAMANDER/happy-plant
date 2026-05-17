@@ -33,29 +33,6 @@
                             <small class="text-muted">Automatically detected after uploading your plant photo</small>
                         </div>
 
-                        <!-- Watering Frequency -->
-                        <div class="mb-3">
-                            <label for="frequency" class="form-label fw-bold text-dark">Watering Frequency</label>
-                            <select class="form-select form-select-custom" id="frequency" name="frequency" required>
-                                <option value="">Select watering frequency</option>
-                                <option value="daily">Daily</option>
-                                <option value="every_2_days">Every 2 Days</option>
-                                <option value="every_3_days">Every 3 Days</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="biweekly">Biweekly</option>
-                                <option value="monthly">Monthly</option>
-                            </select>
-                        </div>
-
-                        <!-- Watering Amount -->
-                        <div class="mb-3">
-                            <label for="waterAmount" class="form-label fw-bold text-dark">Watering Amount (ml)</label>
-                            <input type="number" class="form-control form-control-custom" id="waterAmount" 
-                                   name="amount_ml" placeholder="500" min="0" value="500" required>
-                            <small class="text-muted">How much water per watering session</small>
-                        </div>
-
-                        <!-- Plant Photo Upload -->
                         <div class="mb-4">
                             <label for="photoUpload" class="form-label fw-bold text-dark">Plant Photo</label>
                             <div class="photo-upload-area">
@@ -149,8 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.onload = function(e) {
             previewImage.src = e.target.result;
             photoPreview.classList.remove('d-none');
-            
-            console.log('Image uploaded successfully');
         };
         reader.readAsDataURL(file);
 
