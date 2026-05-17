@@ -2,3 +2,7 @@
 *.sqlite
 *.db
 __pycache__/
+*.png
+*.jpeg
+*.jpg
+*.gif

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import User, Plant
+from app.models import User, Plant, WateringLog, WateringSchedule
 import bcrypt
 import datetime
 
@@ -14,24 +14,30 @@ def create_user(session: Session, username: str, password: str):
     session.add(new_user)
     session.commit()
 
+    return new_user
+
 
 def verify_password(session: Session, username: str, password: str):
-    user = session.query(User).filter_by(username=username)
-    return bcrypt.checkpw(password.encode(), User["hashed_password"])
+    user = session.query(User).filter_by(username=username).first()
+    return user if bcrypt.checkpw(password.encode(), user.hashed_password) else None
 
 
-def get_user_by_username():
-    pass
+def get_user_by_username(session: Session, username: str):
+    return session.query(User).filter_by(username=username).first()
 
 
 def get_user_by_id(session: Session, user_id: int):
     return session.query(User).filter_by(id=user_id).first()
 
 
-def create_plant(session: Session, user_id: int, name: str, photo_url: str, watering_frequency: str, watering_time: str, watering_amount: int):
-    desc = f"water it {watering_frequency} with {watering_amount} ml of water"
-    plant = Plant(user_id=user_id, name=name, description=desc, photo_url=photo_url, created_at=datetime.datetime.now(datetime.timezone.utc))
+def create_plant(session: Session, user_id: int, name: str, species: str, photo_url: str, description: str, watering_frequency: str):
+    plant = Plant(user_id=user_id, name=name, species=species, description=description, photo_url=photo_url, created_at=datetime.datetime.now(datetime.timezone.utc))
     session.add(plant)
+    session.commit()
+
+    plant_id = session.query(Plant).filter_by(name=name, user_id=user_id).first().id
+    watering_schedule = WateringSchedule(plant_id=plant_id, frequency=watering_frequency)
+    session.add(watering_schedule)
     session.commit()
 
     return plant
@@ -51,7 +57,28 @@ def delete_plant(session: Session, plant_id: int):
     session.delete(plant)
     session.commit()
 
+    return plant
+
 
 def update_user_password(session: Session, user_id: int, new_password: str):
     user = session.query(User).filter_by(id=user_id).first()
     user.hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
+    session.commit()
+
+    return user
+
+
+def update_user_username(session: Session, user_id: int, new_username: str):
+    user = session.query(User).filter_by(id=user_id).first()
+    user.username = new_username
+    session.commit()
+
+    return user
+
+
+def create_watering_log(session: Session, plant_id: int, watered_at: datetime.datetime):
+    watering_log = WateringLog(plant_id=plant_id, watered_at=watered_at, created_at=datetime.datetime.now(datetime.timezone.utc))
+    session.add(watering_log)
+    session.commit()
+
+    return watering_log

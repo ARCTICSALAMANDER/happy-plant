@@ -30,9 +30,11 @@
                             <p class="card-text text-muted small">
                                 <strong>Amount:</strong> {{ plant.watering_amount }} ml
                             </p>
-                            <button class="btn btn-sm btn-outline-success mt-2 w-100">
-                                Mark as Watered
-                            </button>
+                            <form action="/plant/{{ plant.id }}/mark-watered" method="POST" style="display: inline; width: 100%;">
+                                <button type="submit" class="btn btn-sm btn-outline-success mt-2 w-100">
+                                    Mark as Watered
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -73,9 +75,6 @@
                             <p class="card-text text-muted small mb-2">
                                 <strong>Species:</strong> {{ plant.species or 'Unknown' }}
                             </p>
-                            <p class="card-text text-muted small mb-2">
-                                <strong>Location:</strong> {{ plant.location or 'Not specified' }}
-                            </p>
                             <p class="card-text text-muted small mb-3">
                                 <strong>Watering:</strong> {{ plant.watering_frequency }}
                             </p>
@@ -83,9 +82,11 @@
                                 <a href="/plant/{{ plant.id }}" class="btn btn-sm btn-outline-success flex-grow-1">
                                     View Details
                                 </a>
-                                <button class="btn btn-sm btn-outline-danger">
-                                    Delete
-                                </button>
+                                <form action="/plant/{{ plant.id }}/delete" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this plant?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
