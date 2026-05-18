@@ -10,6 +10,7 @@ from app.crud import (
     update_user_password, update_user_username
 )
 from app.api import PlantApiImpl
+from waitress import serve
 
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
@@ -265,7 +266,6 @@ def change_credentials():
                 return render_template('user_profile.html', user=user, error='Username already exists'), 400
             session['username'] = new_username
         
-        # Update password if provided
         if new_password:
             if len(new_password) < 6:
                 return render_template('user_profile.html', user=user, error='Password must be at least 6 characters'), 400
@@ -280,4 +280,5 @@ def change_credentials():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    # app.run(debug=False, host='0.0.0.0', port=5000)
+    serve(app, host='0.0.0.0', port=5000)
