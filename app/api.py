@@ -42,6 +42,7 @@ class PlantApiImpl():
             detail_data = res.json()
 
             watering_info = detail_data["result"]["classification"]["suggestions"][0]["details"]["watering"]
+            print(watering_info)
             if watering_info:
                 watering_info = watering_info["min"]
             else:
